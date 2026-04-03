@@ -1,5 +1,6 @@
 package com.moritz.applicationtrackerapi.service;
 
+import com.moritz.applicationtrackerapi.exception.ResourceNotFoundException;
 import com.moritz.applicationtrackerapi.model.Application;
 import com.moritz.applicationtrackerapi.model.ApplicationStatus;
 import com.moritz.applicationtrackerapi.repository.ApplicationRepository;
@@ -26,12 +27,12 @@ public class ApplicationService {
 
     public Application getApplicationById(Long id) {
         return applicationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Application not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Application not found with id: " + id));
     } //orElseThrow erwartet Funktion die eine exception erzeugt
 
     public Application updateStatus(Long id, ApplicationStatus newStatus) {
         Application application = applicationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Application not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Application not found with id: " + id));
 
         application.setStatus(newStatus);
         return applicationRepository.save(application);
@@ -39,8 +40,7 @@ public class ApplicationService {
 
     public void deleteApplication(Long id) {
         if (!applicationRepository.existsById(id)) {
-            throw new RuntimeException("Application not found with id: " + id);
-        }
+            throw new ResourceNotFoundException("Application not found with id: " + id);        }
 
         applicationRepository.deleteById(id); //deletion successfull message kommt im frontend
     }
