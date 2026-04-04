@@ -1,10 +1,13 @@
 package com.moritz.applicationtrackerapi.controller;
 
+import com.moritz.applicationtrackerapi.dto.CreateApplicationRequest;
 import com.moritz.applicationtrackerapi.model.Application;
 import com.moritz.applicationtrackerapi.model.ApplicationStatus;
 import com.moritz.applicationtrackerapi.service.ApplicationService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -18,7 +21,14 @@ public class ApplicationController {
     }
 
     @PostMapping
-    public Application createApplication(@RequestBody Application application) {
+    public Application createApplication(@Valid @RequestBody CreateApplicationRequest request) {
+        Application application = new Application();
+        application.setCompanyName(request.getCompanyName());
+        application.setPosition(request.getPosition());
+        application.setStatus(request.getStatus());
+        application.setNotes(request.getNotes());
+        application.setApplicationDate(LocalDate.now());
+
         return applicationService.createApplication(application);
     }
 
