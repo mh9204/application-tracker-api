@@ -6,13 +6,13 @@ import jakarta.validation.constraints.NotNull;
 
 public class CreateApplicationRequest {
 
-    @NotBlank
+    @NotBlank(message = "must not be blank")
     private String companyName;
 
-    @NotBlank
+    @NotBlank(message = "must not be blank")
     private String position;
 
-    @NotNull
+    @NotNull(message = "must not be null")
     private ApplicationStatus status;
     private String notes;
 
