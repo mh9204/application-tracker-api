@@ -1,5 +1,6 @@
 package com.moritz.applicationtrackerapi.controller;
 
+import com.moritz.applicationtrackerapi.dto.ApplicationResponse;
 import com.moritz.applicationtrackerapi.dto.CreateApplicationRequest;
 import com.moritz.applicationtrackerapi.model.Application;
 import com.moritz.applicationtrackerapi.model.ApplicationStatus;
@@ -21,7 +22,7 @@ public class ApplicationController {
     }
 
     @PostMapping
-    public Application createApplication(@Valid @RequestBody CreateApplicationRequest request) {
+    public ApplicationResponse createApplication(@Valid @RequestBody CreateApplicationRequest request) {
         Application application = new Application();
         application.setCompanyName(request.getCompanyName());
         application.setPosition(request.getPosition());
@@ -29,26 +30,44 @@ public class ApplicationController {
         application.setNotes(request.getNotes());
         application.setApplicationDate(LocalDate.now());
 
-        return applicationService.createApplication(application);
+        Application createdApplication = applicationService.createApplication(application);
+        return mapToResponse(createdApplication);
     }
 
     @GetMapping
-    public List<Application> getAllApplications() {
-        return applicationService.getAllApplications();
+    public List<ApplicationResponse> getAllApplications() {
+        return applicationService.getAllApplications()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public Application getApplicationById(@PathVariable Long id) {
-        return applicationService.getApplicationById(id);
+    public ApplicationResponse getApplicationById(@PathVariable Long id) {
+        Application application = applicationService.getApplicationById(id);
+        return mapToResponse(application);
     }
 
-    @PatchMapping("/{id}/status") // kein PUT, da man nur einen Teil der Bewerbung ändert
-    public Application updateStatus(@PathVariable Long id, @RequestBody ApplicationStatus newStatus) {
-        return applicationService.updateStatus(id, newStatus);
+    @PatchMapping("/{id}/status")
+    public ApplicationResponse updateStatus(@PathVariable Long id, @RequestBody ApplicationStatus newStatus) {
+        Application updatedApplication = applicationService.updateStatus(id, newStatus);
+        return mapToResponse(updatedApplication);
     }
 
     @DeleteMapping("/{id}")
     public void deleteApplication(@PathVariable Long id) {
         applicationService.deleteApplication(id);
+    }
+
+    private ApplicationResponse mapToResponse(Application application) {
+        ApplicationResponse response = new ApplicationResponse();
+        response.setId(application.getId());
+        response.setCompanyName(application.getCompanyName());
+        response.setPosition(application.getPosition());
+        response.setStatus(application.getStatus());
+        response.setApplicationDate(application.getApplicationDate());
+        response.setNotes(application.getNotes());
+
+        return response;
     }
 }

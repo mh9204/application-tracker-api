@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestControllerAdvice
+@RestControllerAdvice //globale Hilfsannotation für Controller, vor allem für zentrale Fehlerbehandlung
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
