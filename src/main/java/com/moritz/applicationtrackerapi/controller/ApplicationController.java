@@ -2,6 +2,7 @@ package com.moritz.applicationtrackerapi.controller;
 
 import com.moritz.applicationtrackerapi.dto.ApplicationResponse;
 import com.moritz.applicationtrackerapi.dto.CreateApplicationRequest;
+import com.moritz.applicationtrackerapi.dto.UpdateStatusRequest;
 import com.moritz.applicationtrackerapi.model.Application;
 import com.moritz.applicationtrackerapi.model.ApplicationStatus;
 import com.moritz.applicationtrackerapi.service.ApplicationService;
@@ -49,8 +50,8 @@ public class ApplicationController {
     }
 
     @PatchMapping("/{id}/status")
-    public ApplicationResponse updateStatus(@PathVariable Long id, @RequestBody ApplicationStatus newStatus) {
-        Application updatedApplication = applicationService.updateStatus(id, newStatus);
+    public ApplicationResponse updateStatus(@PathVariable Long id,@Valid @RequestBody UpdateStatusRequest request) {
+        Application updatedApplication = applicationService.updateStatus(id, request.getStatus());
         return mapToResponse(updatedApplication);
     }
 
