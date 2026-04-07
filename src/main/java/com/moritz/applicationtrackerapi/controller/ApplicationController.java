@@ -25,7 +25,7 @@ public class ApplicationController {
     }
 
     @PostMapping
-    public ResponseEntity<ApplicationResponse> createApplication(@Valid @RequestBody CreateApplicationRequest request) {
+    public ResponseEntity<ApplicationResponse> createApplication(@Valid @RequestBody CreateApplicationRequest request) { //nur hier und bei Delete Custom Responses wegen 201 created und 204 no content
         Application application = new Application();
         application.setCompanyName(request.getCompanyName());
         application.setPosition(request.getPosition());
@@ -39,9 +39,16 @@ public class ApplicationController {
     }
 
     @GetMapping
-    public List<ApplicationResponse> getAllApplications() {
-        return applicationService.getAllApplications()
-                .stream()
+    public List<ApplicationResponse> getAllApplications(@RequestParam(required = false) ApplicationStatus status) {
+        List<Application> applications;
+
+        if (status != null) {
+            applications = applicationService.getApplicatiosByStatus(status);
+        } else {
+            applications = applicationService.getAllApplications();
+        }
+
+        return  applications.stream()
                 .map(this::mapToResponse)
                 .toList();
     }
