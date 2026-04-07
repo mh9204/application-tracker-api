@@ -7,6 +7,8 @@ import com.moritz.applicationtrackerapi.model.Application;
 import com.moritz.applicationtrackerapi.model.ApplicationStatus;
 import com.moritz.applicationtrackerapi.service.ApplicationService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -16,14 +18,14 @@ import java.util.List;
 @RequestMapping("/applications")
 public class ApplicationController {
 
-    private final ApplicationService applicationService;
+    private final ApplicationService applicationService; // Controller bekommt den Service nur einmal, diese Abhängigkeit wird über den Konstruktor injiziert und soll sich nicht mehr verändern
 
     public ApplicationController(ApplicationService applicationService) {
         this.applicationService = applicationService;
     }
 
     @PostMapping
-    public ApplicationResponse createApplication(@Valid @RequestBody CreateApplicationRequest request) {
+    public ResponseEntity<ApplicationResponse> createApplication(@Valid @RequestBody CreateApplicationRequest request) {
         Application application = new Application();
         application.setCompanyName(request.getCompanyName());
         application.setPosition(request.getPosition());
@@ -32,7 +34,8 @@ public class ApplicationController {
         application.setApplicationDate(LocalDate.now());
 
         Application createdApplication = applicationService.createApplication(application);
-        return mapToResponse(createdApplication);
+        ApplicationResponse response = mapToResponse(createdApplication);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
@@ -56,8 +59,9 @@ public class ApplicationController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteApplication(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteApplication(@PathVariable Long id) {
         applicationService.deleteApplication(id);
+        return ResponseEntity.noContent().build();
     }
 
     private ApplicationResponse mapToResponse(Application application) {
