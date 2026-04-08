@@ -39,11 +39,13 @@ public class ApplicationController {
     }
 
     @GetMapping
-    public List<ApplicationResponse> getAllApplications(@RequestParam(required = false) ApplicationStatus status) {
+    public List<ApplicationResponse> getAllApplications(@RequestParam(required = false) ApplicationStatus status, @RequestParam(required = false) String companyName) { // wenn man die query also parameter nach dem fragezeichen frei lässt werden einfach alle zurückgeben weil dann das else greift, wenn man einen nicht vorhandenen Firmennamen eingibt dann wird einfach nichts zurückgegeben
         List<Application> applications;
 
         if (status != null) {
-            applications = applicationService.getApplicatiosByStatus(status);
+            applications = applicationService.getApplicationsByStatus(status);
+        } else if (companyName != null && !companyName.isBlank()) {
+            applications = applicationService.getApplicationsByCompanyName(companyName);
         } else {
             applications = applicationService.getAllApplications();
         }

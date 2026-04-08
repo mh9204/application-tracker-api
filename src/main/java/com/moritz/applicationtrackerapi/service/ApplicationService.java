@@ -45,7 +45,11 @@ public class ApplicationService {
         applicationRepository.deleteById(id); //deletion successfull message kommt im frontend
     }
 
-    public List<Application> getApplicatiosByStatus(ApplicationStatus status) {
+    public List<Application> getApplicationsByStatus(ApplicationStatus status) {
         return applicationRepository.findByStatus(status);
+    }
+
+    public List<Application> getApplicationsByCompanyName(String companyName) {
+        return applicationRepository.findByCompanyNameContainingIgnoreCase(companyName);
     }
 }

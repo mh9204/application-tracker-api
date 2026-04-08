@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
     List<Application> findByStatus(ApplicationStatus status);
-
+    List<Application> findByCompanyNameContainingIgnoreCase(String companyName);
 }
