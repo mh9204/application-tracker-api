@@ -11,12 +11,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest //starte kompletten Spring Boot Kontext für den Test
 @AutoConfigureMockMvc //MockMvc wird automatisch bereit gestellt
+@ActiveProfiles("test") //aktiviere das Spring Profil "test" und lade die passende Konfigurationsdatei (das Muster dabei ist application.properties = allgemein, und bei application-test.properties konfiguration für profil test
 class ApplicationControllerTest { // Integrationstest für Web Layer, keine reiner Unit Test
 
     @Autowired //man muss die Objekte nicht mehr mit new bauen
